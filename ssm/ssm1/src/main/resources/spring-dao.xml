@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+<!--  配置整合mybatis  -->
+<!--  1.关联数据库文件  -->
+    <context:property-placeholder location="classpath:db.properties"/>
+
+<!--  数据库连接池  -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${driver}"/>
+        <property name="jdbcUrl" value="${url}"/>
+        <property name="user" value="${usern}"/>
+        <property name="password" value="${password}"/>
+
+    </bean>
+
+<!--  3.配置salSessionFactory对象  -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+<!--  4.扫描配置Dao接口包，动态实现Dao接口注入到Spring中  -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+<!--    注入sqlSessionFactory    -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.liuren.mapper"/>
+    </bean>
+
+</beans>
